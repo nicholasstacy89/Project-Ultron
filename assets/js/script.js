@@ -29,11 +29,10 @@ function marvelApi(data) {
         console.log(data.data.results[i].name);
         var marvelCard = $('<div>').addClass('singlecard tile is-child').attr('style', 'background-color: #34A8DA', 'margin: 10px','width: 18rem;');
         var list = document.getElementById('list');
+        var charName = data.data.results[i].name;
         list.append(marvelCard);
-        marvelCard.append($('<h3 class="card-title">').text(data.data.results.name));
-        marvelCard.append($('<p class="card-text">').text(data.data.results.description));
-        marvelCard.append($('<p class="card-text">').text(data.data.results.thumbnail));
-        marvelCard.append($('<p class="card-text">').text(data.data.results.comics));
+        marvelCard.append($('<h3 class="card-title">').text(charName));
+      
 
     }};
 
