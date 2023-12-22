@@ -30,6 +30,7 @@ input {
     background-color: grey ;
     border: none;
     border-radius: .5em;
+    cursor: default;
 }
 button {
     padding: 1em .5em;
@@ -45,4 +46,20 @@ button:hover {
 }
 .display-container {
     padding: 1em;
+}
+.list {
+    position: absolute
+    width 60%;
+    background-color: lightgray;  
+    color: black;
+    z-index: 1;
+}
+.autocomplete-item {
+    padding: 0.5em;
+
+}
+.autocomplete-item:hover {
+    background-color: #46e0f5;
+    color: black;
+    cursor: pointer;
 }
