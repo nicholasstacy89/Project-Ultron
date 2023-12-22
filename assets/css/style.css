@@ -1,3 +1,48 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
 body {
     background-color: black;
+
+    
+}
+.container {
+    width: 90%;
+    margin: auto;
+    padding: 3em;
+    position: absolute
+    transdorm: translate(-50%, -50%);
+    left: 50%;
+    right: 50%;
+    top: 1em;
+    bottom: 1em;
+}
+.input-container {
+    display: grid;
+    grid-template-columns: 9fr 3fr;
+    gap 1em;
+}
+input {
+    padding: 1em .5em;
+    background-color: grey ;
+    border: none;
+    border-radius: .5em;
+}
+button {
+    padding: 1em .5em;
+    background-color: #2ecc71;
+    border: none;
+    border-radius: .5em;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #1a8145;
+}
+.display-container {
+    padding: 1em;
 }
