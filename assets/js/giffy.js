@@ -76,7 +76,7 @@ function displayGiffy(obj) {
                        name: superheroName,
                        image_title: obj.data[i].title,
                        image_orig: obj.data[i].images.original.url,
-                       image_small_still: obj.data[i].images.fixed_height_small_still.url};
+                       image_small_still: obj.data[i].images.fixed_height_small.url};
   }
 
   // display the images in the results division, allow user to choose one
@@ -87,6 +87,7 @@ function displayGiffy(obj) {
   for (let i = 0; i < giffyResults.length; i++) {
     let imgEl = document.createElement("img");
     imgEl.src = giffyResults[i].image_orig;
+    imgEl.alt = giffyResults[i].image_title;
     imgEl.dataset.index = i;  // for identification if selected
     resultsDivEl.appendChild(imgEl);
   }
@@ -94,11 +95,24 @@ function displayGiffy(obj) {
 
 // function accepts an index (for the results object area)
 // it displays the small version of the image in the "saved" div
-// it also updates local storage with the info
+// it also updates local storage with the info and clears the results
+// (should it do the latter?)
 function saveGiffy(index) {
 
-  console.log(giffyResults[index]);
+  // store the smaller image in the saved search area
+  let imgEl = document.createElement("img");
+  imgEl.src = giffyResults[index].image_small_still;
+  imgEl.alt = giffyResults[index].image_title;
+  savedDivEl.appendChild(imgEl);
 
+  // update the saved search array and save to localStorage
+
+
+  // now clear the results Div
+  let resultsImgEl = document.querySelectorAll("#results img");
+  for (let i = 0; i < resultsImgEl.length; i++) {
+    resultsImgEl[i].remove();
+  }
 }
 
 // loads data from local storage and sets up the "saved searches" images area
