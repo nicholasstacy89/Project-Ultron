@@ -15,7 +15,7 @@ function getSuperData(superID) {
             console.log(error);
         });
 }
-//btn.addEventListener('click', getSuperData);
+
 
 function getID() {
     var supername = document.getElementById('supername').value;
@@ -24,7 +24,7 @@ function getID() {
             return response.json();
         })
         .then(function (data) {
-            //console.log(data);
+            console.log(data);
             usesuperID(data);
         })
         .catch(function (error) {
@@ -32,7 +32,7 @@ function getID() {
         });
     
 }
-//btn.addEventListener('click', getID);
+
 
 function usesuperID(data) {
     //console.log(data);
