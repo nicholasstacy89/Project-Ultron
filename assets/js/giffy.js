@@ -12,8 +12,8 @@ const savedDivEl = document.querySelector("#saved-giffy");
 
 // global for convenience in storing and retrieval
 let superheroName = "";
-let savedSearches = [];
 let giffyResults = [];
+let savedSearches = [];
 
 ///////////////////////////////////////////////////////////////////////////////
 //                           Function Declarations                           //
@@ -76,7 +76,7 @@ function displayGiffy(obj) {
                        name: superheroName,
                        image_title: obj.data[i].title,
                        image_orig: obj.data[i].images.original.url,
-                       image_small_still: obj.data[i].images.fixed_height_small.url};
+                       image_small: obj.data[i].images.fixed_height_small.url};
   }
 
   // display the images in the results division, allow user to choose one
@@ -96,14 +96,12 @@ function displayGiffy(obj) {
 // (should it do the latter?)
 function saveGiffy(index) {
 
-  // store the smaller image in the saved search area
-  let imgEl = document.createElement("img");
-  imgEl.src = giffyResults[index].image_small_still;
-  imgEl.alt = giffyResults[index].image_title;
-  savedDivEl.appendChild(imgEl);
+  addGiffy(giffyResults[index]);
 
   // update the saved search array and save to localStorage
-
+  // At some point we may limit the number of saved searches
+  savedSearches.push(giffyResults[index]);
+  localStorage.setItem("savedSearches", JSON.stringify(savedSearches));
 
   // now clear the results Div
   let resultsImgEl = document.querySelectorAll("#results img");
@@ -112,9 +110,36 @@ function saveGiffy(index) {
   }
 }
 
+// adds giffy panel to saved search area
+// use figure element with caption set to superhero name
+// will need to change to an inline display
+// since figure element is block by default
+function addGiffy(giffyObj) {
+  let figEl = document.createElement("figure");
+  let imgEl = document.createElement("img");
+  imgEl.src = giffyObj.image_small;
+  imgEl.alt = giffyObj.image_title;
+  let captionEl = document.createElement("figcaption");
+  captionEl.textContent = giffyObj.name;
+  let newFigEl = savedDivEl.appendChild(figEl);
+  newFigEl.appendChild(imgEl);
+  newFigEl.appendChild(captionEl);
+}
+
 // loads data from local storage and sets up the "saved searches" images area
 function initDisplay() {
+  // retrieve array of previous searches from local storage
+  savedSearches = JSON.parse(localStorage.getItem("savedSearches"));
 
+  // assuming there are some, set up the giffy panels
+  if (savedSearches !== null) {
+    for (let i = 0; i < savedSearches.length; i++) {
+      addGiffy(savedSearches[i]);
+    }
+  } else {
+    // want it as an empty array not null
+    savedSearches = [];
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
