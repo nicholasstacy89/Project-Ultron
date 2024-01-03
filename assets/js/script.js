@@ -73,8 +73,8 @@ function createSuper(data) {
 document.addEventListener('DOMContentLoaded', () => {
 
     // event listeners
-    btn.addEventListener('click', getSuperData);
     btn.addEventListener('click', getID);
+    btn.addEventListener('click', getSuperData);
 
     // not sure what this is supposed to do here?
     createSuper();
