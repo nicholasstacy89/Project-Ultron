@@ -68,17 +68,15 @@ function createSuper(data) {
     console.log('speed: '+ superSpeed);
 }
 
-/*
- * Event listeners
- */
-
-btn.addEventListener('click', getSuperData);
-btn.addEventListener('click', getID);
-
 // Document ready
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // event listeners
+    btn.addEventListener('click', getSuperData);
+    btn.addEventListener('click', getID);
+
+    // not sure what this is supposed to do here?
     createSuper();
 
 }, false);  // end DOM ready
