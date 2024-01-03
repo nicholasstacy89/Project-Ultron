@@ -1,5 +1,5 @@
 var btn = document.getElementById('search');
-;
+
 
 
 function getSuperData(superID) {
@@ -18,7 +18,7 @@ function getSuperData(superID) {
 //btn.addEventListener('click', getSuperData);
 
 function getID() {
-    var supername = document.getElementById('supername').value
+    var supername = document.getElementById('supername').value;
     console.log(supername);
     fetch('https://www.superheroapi.com/api.php/10163066703485828/search/'+supername)        .then(function (response) {
             return response.json();
