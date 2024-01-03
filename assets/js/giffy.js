@@ -81,9 +81,6 @@ function displayGiffy(obj) {
 
   // display the images in the results division, allow user to choose one
   // will need to set up a listener for the results div
-  // set the focus on the first image to allow keyboard navigation (ENTER to select)
-  // TAB or ESC to go back to the name input field (ie, to not save)
-
   for (let i = 0; i < giffyResults.length; i++) {
     let imgEl = document.createElement("img");
     imgEl.src = giffyResults[i].image_orig;
@@ -135,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Event listeners to select an image to store
+  // Event listener to select an image to store
   resultsDivEl.addEventListener("click", e => {
     let index = parseInt(e.target.dataset.index);
     saveGiffy(index);
