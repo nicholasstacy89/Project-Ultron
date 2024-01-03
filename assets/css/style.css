@@ -69,5 +69,15 @@ button:hover {
     padding: 1em;
     margin: 1em;
     display: grid;
-    color: black;  
+    color: black; 
+     
+}
+
+.pop-Card {
+    background-color: grey;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 1em;
+    display: grid;
+    color: black; 
 }

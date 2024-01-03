@@ -1,5 +1,5 @@
 var btn = document.getElementById('search');
-var supername = document.getElementById('supername').value;
+;
 
 
 function getSuperData(superID) {
@@ -18,7 +18,7 @@ function getSuperData(superID) {
 //btn.addEventListener('click', getSuperData);
 
 function getID() {
-   
+    var supername = document.getElementById('supername').value
     console.log(supername);
     fetch('https://www.superheroapi.com/api.php/10163066703485828/search/'+supername)        .then(function (response) {
             return response.json();
@@ -30,6 +30,7 @@ function getID() {
         .catch(function (error) {
             console.log(error);
         });
+    
 }
 //btn.addEventListener('click', getID);
 
@@ -64,9 +65,9 @@ function createSuper(data) {
     console.log('intelligence: '+superIntelligence);
     console.log('strength: '+ superStrength);
     console.log('speed: '+ superSpeed);
-    var createdSuper = $('<div>').attr('id', 'pop-card');
+    var createdSuper = $('<div>').attr('class', 'pop-card');
     $('#superCard').append(createdSuper);
-    createdSuper.prepend(cardName);
+    createdSuper.append(cardName);
     createdSuper.append($('<img>').attr('src', data.image.url));
     createdSuper.append($('<p>').text('Height: '+ height));
     createdSuper.append($('<p>').html('Hair: '+ hair));
