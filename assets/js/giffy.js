@@ -49,6 +49,9 @@ function getGiffy(name) {
   let URL = "";
   let trendingGIF = false;  // use trending endpoint?
 
+  // clear any previous results
+  clearResults();
+
   // construct fetch URL; retrieve data on 6 images
   if (trendingGIF) {
     URL = trendingURL + "?api_key=" + giphyAPIkey + "&q=" + name + "&limit=6";
@@ -95,7 +98,7 @@ function displayGiffy(obj) {
 // it also updates local storage with the info and clears the results
 // (should it do the latter?)
 function saveGiffy(index) {
-
+  // add small image to saved results area
   addGiffy(giffyResults[index]);
 
   // update the saved search array and save to localStorage
@@ -104,6 +107,11 @@ function saveGiffy(index) {
   localStorage.setItem("savedSearches", JSON.stringify(savedSearches));
 
   // now clear the results Div
+  clearResults();
+}
+
+// sometimes we need to clear out previous results
+function clearResults() {
   let resultsImgEl = document.querySelectorAll("#results img");
   for (let i = 0; i < resultsImgEl.length; i++) {
     resultsImgEl[i].remove();
@@ -113,14 +121,23 @@ function saveGiffy(index) {
 // adds giffy panel to saved search area
 // use figure element with caption set to superhero name
 // will need to change to an inline display
-// since figure element is block by default
+// function called by saveGIffy() and initDisplay()
 function addGiffy(giffyObj) {
   let figEl = document.createElement("figure");
   let imgEl = document.createElement("img");
+  let captionEl = document.createElement("figcaption");
+
+  // set the visible elements
   imgEl.src = giffyObj.image_small;
   imgEl.alt = giffyObj.image_title;
-  let captionEl = document.createElement("figcaption");
   captionEl.textContent = giffyObj.name;
+
+  // same name as data attribute for re-launching searches
+  imgEl.dataset.name = giffyObj.name;
+  captionEl.dataset.name = giffyObj.name;
+  figEl.dataset.name = giffyObj.name;
+
+  // create figure and its children image & caption
   let newFigEl = savedDivEl.appendChild(figEl);
   newFigEl.appendChild(imgEl);
   newFigEl.appendChild(captionEl);
@@ -161,6 +178,16 @@ document.addEventListener('DOMContentLoaded', () => {
   resultsDivEl.addEventListener("click", e => {
     let index = parseInt(e.target.dataset.index);
     saveGiffy(index);
+  });
+
+  // Listener for the saved images, clicking will start new search for name
+  savedDivEl.addEventListener("click", e => {
+    let name = e.target.dataset.name;
+    if (name !== "") {
+      superheroName = name;
+      // launch new search
+      getGiffy(superheroName);
+    }
   });
 
   // need to initialize the display by loading data from local storage
