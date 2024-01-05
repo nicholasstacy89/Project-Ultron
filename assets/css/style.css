@@ -63,3 +63,21 @@ button:hover {
     color: black;
     cursor: pointer;
 }
+#superCard {
+    background-color: #ffffff;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 1em;
+    display: grid;
+    color: black; 
+     
+}
+
+.pop-Card {
+    background-color: grey;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 1em;
+    display: grid;
+    color: black; 
+}
