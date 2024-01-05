@@ -1,5 +1,6 @@
 "use strict";
 
+// TODO: Arrows should be invisible or greyed when there are no results
 // TODO: Mousover of saved images will display a larger version of the image
 //      (or provide some other way to view the enlarged version of the saved image)
 // TODO: Double-clicking a saved image will remove it
@@ -217,6 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Listeners to scroll through the results
   resultsLeftArrowEl.addEventListener("click", () => {
+    if (giffyResults.length===0) {
+      // no results to scroll
+      return;
+    }
     currentGiffyResultsIndex--;
     if (currentGiffyResultsIndex < 0) {
       // set to the final element (wrap around)
@@ -225,6 +230,10 @@ document.addEventListener('DOMContentLoaded', () => {
     displayGiffy(currentGiffyResultsIndex);
   });
   resultsRightArrowEl.addEventListener("click", () => {
+    if (giffyResults.length===0) {
+      // no results to scroll
+      return;
+    }
     currentGiffyResultsIndex++;
     if (currentGiffyResultsIndex >= giffyResults.length) {
       // set to the firtst element (wrap around)
