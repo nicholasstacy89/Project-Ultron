@@ -1,5 +1,11 @@
 "use strict";
 
+// TODO: Double-click to remove giffy
+// TODO: Retrieve more images, scroll through them
+// TODO: Change img to figure with caption
+// TODO: Randomize the array
+// CANCEL: Allow user to select options with drop-down
+
 ///////////////////////////////////////////////////////////////////////////////
 //                              Global Variables                             //
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,17 +53,12 @@ function getGiffy(name) {
   let trendingURL = "https://api.giphy.com/v1/gifs/trending";
   let giphyURL = "https://api.giphy.com/v1/gifs/search"
   let URL = "";
-  let trendingGIF = false;  // use trending endpoint?
 
   // clear any previous results
   clearResults();
 
-  // construct fetch URL; retrieve data on 6 images
-  if (trendingGIF) {
-    URL = trendingURL + "?api_key=" + giphyAPIkey + "&q=" + name + "&limit=6";
-  } else {
-    URL = giphyURL + "?api_key=" + giphyAPIkey + "&q=" + name + "&limit=6";
-  }
+  // construct fetch URL; default retrieves 50 images
+  URL = giphyURL + "?api_key=" + giphyAPIkey + "&q=" + name;
 
   fetch(URL)
     .then(response => response.json())
@@ -105,9 +106,6 @@ function saveGiffy(index) {
   // At some point we may limit the number of saved searches
   savedSearches.push(giffyResults[index]);
   localStorage.setItem("savedSearches", JSON.stringify(savedSearches));
-
-  // now clear the results Div
-  clearResults();
 }
 
 // sometimes we need to clear out previous results
