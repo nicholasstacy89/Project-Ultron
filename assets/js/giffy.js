@@ -200,10 +200,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Event listener to select an image to store
+  // Event listener to results area. Respond to clicks on images or arrows.
   resultsDivEl.addEventListener("click", e => {
-    let index = parseInt(e.target.dataset.index);
-    saveGiffy(index);
+    // if there are no results, get out of here
+    if (giffyResults.length===0) {return;}
+
+    if (e.target === resultsLeftArrowEl) {
+      // scroll left
+      currentGiffyResultsIndex--;
+      if (currentGiffyResultsIndex < 0) {
+        // set to the final element (wrap around)
+        currentGiffyResultsIndex = giffyResults.length-1;
+      }
+      displayGiffy(currentGiffyResultsIndex);
+    } else if (e.target === resultsRightArrowEl) {
+      // scroll right
+      currentGiffyResultsIndex++;
+      if (currentGiffyResultsIndex >= giffyResults.length) {
+        // set to the firtst element (wrap around)
+        currentGiffyResultsIndex = 0;
+      }
+      displayGiffy(currentGiffyResultsIndex);
+    } else if (e.target.tagName == "IMG") {
+      let index = parseInt(e.target.dataset.index);
+      saveGiffy(index);
+    }
   });
 
   // Listener for the saved images, clicking will start new search for name
@@ -214,32 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // launch new search
       getGiffy(superheroName);
     }
-  });
-
-  // Listeners to scroll through the results
-  resultsLeftArrowEl.addEventListener("click", () => {
-    if (giffyResults.length===0) {
-      // no results to scroll
-      return;
-    }
-    currentGiffyResultsIndex--;
-    if (currentGiffyResultsIndex < 0) {
-      // set to the final element (wrap around)
-      currentGiffyResultsIndex = giffyResults.length-1;
-    }
-    displayGiffy(currentGiffyResultsIndex);
-  });
-  resultsRightArrowEl.addEventListener("click", () => {
-    if (giffyResults.length===0) {
-      // no results to scroll
-      return;
-    }
-    currentGiffyResultsIndex++;
-    if (currentGiffyResultsIndex >= giffyResults.length) {
-      // set to the firtst element (wrap around)
-      currentGiffyResultsIndex = 0;
-    }
-    displayGiffy(currentGiffyResultsIndex);
   });
 
   // need to initialize the display by loading data from local storage
