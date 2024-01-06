@@ -1,6 +1,5 @@
 "use strict";
 
-// TODO: Arrows should be invisible or greyed when there are no results
 // TODO: Double-clicking a saved image will remove it
 // TODO: review global variables. Do I really need that many?
 
@@ -27,7 +26,7 @@ let savedSearches = [];
 //                           Function Declarations                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-// calback function for search events (clicking button, hitting enter)
+// callback function for search events (clicking button, hitting enter)
 // function gets name from the input and calls the fetch function
 function startSearch() {
   superheroName = nameInputEl.value;
@@ -219,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Event listener to results area. Respond to clicks on images or arrows.
+  // Clicking arrow scrolls, clicking an image saves that giffy
   resultsDivEl.addEventListener("click", e => {
     // if there are no results, get out of here
     if (giffyResults.length===0) {return;}
@@ -263,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Listener for clear-all button, clicking will delete local storage and clear the results area
   document.querySelector("#clear-all").addEventListener("click", () => {
     localStorage.removeItem("savedSearches");
+    savedSearches = [];
     let savedFiguresEl = document.querySelectorAll("#saved-giffy figure");
     for (let i = 0; i < savedFiguresEl.length; i++) {
       savedFiguresEl[i].remove();

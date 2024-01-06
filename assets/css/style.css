@@ -4,11 +4,14 @@
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
+/* Commented out background color temporarily */
+/*
 body {
     background-color: black;
 
-    
+
 }
+ */
 .container {
     width: 90%;
     margin: auto;
