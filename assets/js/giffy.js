@@ -1,8 +1,6 @@
 "use strict";
 
 // TODO: Arrows should be invisible or greyed when there are no results
-// TODO: Mousover of saved images will display a larger version of the image
-//      (or provide some other way to view the enlarged version of the saved image)
 // TODO: Double-clicking a saved image will remove it
 // TODO: review global variables. Do I really need that many?
 
@@ -162,10 +160,31 @@ function addGiffy(giffyObj) {
   captionEl.dataset.name = giffyObj.name;
   figEl.dataset.name = giffyObj.name;
 
-  // create figure and its children image & caption
-  let newFigEl = savedDivEl.appendChild(figEl);
-  newFigEl.appendChild(imgEl);
-  newFigEl.appendChild(captionEl);
+  // create figure children
+  figEl.appendChild(imgEl);
+  figEl.append(captionEl)
+
+  // create a span element for the larger image, it can be hidden/revealed in CSS using :hover
+  let spanEl = document.createElement("span");
+  spanEl.className = "large";
+  let largeFigEl = document.createElement("img");
+  largeFigEl.src = giffyObj.image_orig;
+  largeFigEl.alt = giffyObj.image_title;
+  largeFigEl.className = "large-image";
+  spanEl.appendChild(largeFigEl);
+
+  // line below "turns off" the large image to hide it
+  // Ultimately the line should be discarded and CSS used to hide and then show on :hover
+  largeFigEl.style.display = "none";
+  // another option to hide/show images is with the opacity style attribute (along with position, etc)
+  // largeFigEl.style.opacity = "0.5";
+
+  // now add it to the page
+  figEl.appendChild(spanEl);
+
+  // create figure and its children
+  savedDivEl.appendChild(figEl);
+
 }
 
 // loads data from local storage and sets up the "saved searches" images area
