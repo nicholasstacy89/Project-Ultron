@@ -26,7 +26,7 @@ let savedSearches = [];
 //                           Function Declarations                           //
 ///////////////////////////////////////////////////////////////////////////////
 
-// calback function for search events (clicking button, hitting enter)
+// callback function for search events (clicking button, hitting enter)
 // function gets name from the input and calls the fetch function
 function startSearch() {
   superheroName = nameInputEl.value;
