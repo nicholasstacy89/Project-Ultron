@@ -132,7 +132,7 @@ function createSuper(data) {
 
     
      clearSuperCard();   
-    
+    console.log(data);
     var superName = data.name;
     var eyes = data.appearance["eye-color"];
     var height = data.appearance.height[0];
@@ -141,6 +141,8 @@ function createSuper(data) {
     var superIntelligence = data.powerstats.intelligence;
     var superStrength = data.powerstats.strength;
     var superSpeed = data.powerstats.speed;
+    var groupAffiliation = data.connections["group-affiliation"];
+    var fullName = data.biography["full-name"];
     var cardName = $('<h1>').html(superName);
     superCard.style.display = 'block';
     console.log('name: '+ superName);
@@ -155,6 +157,8 @@ function createSuper(data) {
     $('#superCard').append(createdSuper);
     createdSuper.append(cardName);
     createdSuper.append($('<img>').attr('src', data.image.url));
+    createdSuper.append($('<p>').html('Full Name: '+ fullName));
+    createdSuper.append($('<p>').html('Group Affiliation: '+ groupAffiliation));
     createdSuper.append($('<p>').text('Height: '+ height));
     createdSuper.append($('<p>').html('Hair: '+ hair));
     createdSuper.append($('<p>').html('Eyes: '+ eyes));
