@@ -14,7 +14,7 @@
         <main>
             <div id="search-form">
                 <input id="superhero-name" type="text" placeholder="Enter superhero name" />
-                <button id="search-btn">Search</button>
+                <button id="search-btn" type="button">Search</button>
             </div>
 
             <div id="results">
@@ -31,8 +31,9 @@
 
             <div id="saved-giffy">
                 <h2>Saved Images</h2>
-                <p>(Click to search again)</p>
-                <!-- a set of small images representing a saved giffy -->
+                <p>(Click to search again, double-click to clear that image)</p>
+                <button id="clear-all" type="button">Clear all</button>
+                <!-- a set of captioned small images inside figure elements, each representing a saved giffy -->
             </div>
 
             <script type="text/javascript" src="./assets/js/giffy.js"></script>

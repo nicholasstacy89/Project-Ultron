@@ -4,7 +4,6 @@
 // TODO: Mousover of saved images will display a larger version of the image
 //      (or provide some other way to view the enlarged version of the saved image)
 // TODO: Double-clicking a saved image will remove it
-// TODO: Provide a way to clear all saved images
 // TODO: review global variables. Do I really need that many?
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -229,11 +228,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Listener for the saved images, clicking will start new search for name
   savedDivEl.addEventListener("click", e => {
+    // need to click on an image
+    if (e.target.tagName != "IMG") {
+      return;
+    }
+    // get the name of the superhero from the data attribute
     let name = e.target.dataset.name;
     if (name !== "") {
       superheroName = name;
       // launch new search
       getGiffy(superheroName);
+    }
+  });
+
+  // Listener for clear-all button, clicking will delete local storage and clear the results area
+  document.querySelector("#clear-all").addEventListener("click", () => {
+    localStorage.removeItem("savedSearches");
+    let savedFiguresEl = document.querySelectorAll("#saved-giffy figure");
+    for (let i = 0; i < savedFiguresEl.length; i++) {
+      savedFiguresEl[i].remove();
     }
   });
 
