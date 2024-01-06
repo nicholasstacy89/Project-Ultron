@@ -19,12 +19,12 @@ input.addEventListener('keyup', async () => {
     var url = 'https://www.superheroapi.com/api.php/10163066703485828/search/' +input.value;
     var response = await fetch(url);
     var JsonData = await response.json();
-    if (input.value.length <3) {
+    if (input.value.length <4) {
         removeElements();
         return;
     }   
     
-    if (input.value.length >= 3) {
+    if (input.value.length >= 4) {
         console.log(JsonData);
         console.log(url);
         
@@ -110,6 +110,7 @@ function getSuperData(superID) {
             //console.log(data);
             createSuper(data);
             listContainer.style.display = 'none';
+            superList = [];
             $(input).val('');
         })
         .catch(function (error) {
