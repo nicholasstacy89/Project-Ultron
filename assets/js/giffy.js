@@ -1,5 +1,9 @@
 "use strict";
 
+// TODO: Arrows should be invisible or greyed when there are no results
+// TODO: Double-clicking a saved image will remove it
+// TODO: review global variables. Do I really need that many?
+
 ///////////////////////////////////////////////////////////////////////////////
 //                              Global Variables                             //
 ///////////////////////////////////////////////////////////////////////////////
@@ -9,10 +13,14 @@ const searchBtnEl = document.querySelector("#search-btn");
 const nameInputEl = document.querySelector("#superhero-name");
 const resultsDivEl = document.querySelector("#results");
 const savedDivEl = document.querySelector("#saved-giffy");
+const resultsFiguresEl = document.querySelectorAll("#results figure");
+const resultsLeftArrowEl = document.querySelector("#results-left-arrow");
+const resultsRightArrowEl = document.querySelector("#results-right-arrow");
 
 // global for convenience in storing and retrieval
 let superheroName = "";
 let giffyResults = [];
+let currentGiffyResultsIndex = 0;
 let savedSearches = [];
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,50 +55,76 @@ function getGiffy(name) {
   let trendingURL = "https://api.giphy.com/v1/gifs/trending";
   let giphyURL = "https://api.giphy.com/v1/gifs/search"
   let URL = "";
-  let trendingGIF = false;  // use trending endpoint?
 
-  // clear any previous results
-  clearResults();
-
-  // construct fetch URL; retrieve data on 6 images
-  if (trendingGIF) {
-    URL = trendingURL + "?api_key=" + giphyAPIkey + "&q=" + name + "&limit=6";
-  } else {
-    URL = giphyURL + "?api_key=" + giphyAPIkey + "&q=" + name + "&limit=6";
-  }
+  // construct fetch URL; default retrieves 50 images
+  URL = giphyURL + "?api_key=" + giphyAPIkey + "&q=" + name;
 
   fetch(URL)
     .then(response => response.json())
-    .then(displayGiffy)
+    .then(json => {
+      giffyResults = [];
+      // let's retrieve some info from the json object
+      // API info: https://developers.giphy.com/docs/api/schema#gif-object
+      for (let i = 0; i < json.data.length; i++) {
+        giffyResults[i] = {id: json.data[i].id,
+                           name: superheroName,
+                           image_title: json.data[i].title,
+                           image_orig: json.data[i].images.original.url,
+                           image_small: json.data[i].images.fixed_height_small.url};
+      }
+
+
+      // shuffle the order so that doing the same search looks new
+      giffyResults = shuffle(giffyResults);
+
+      // show the first image
+      displayGiffy(0);
+
+    })
     .catch(e => console.log(e.message));
 }
 
-// callback function for getGiffy
-// input is an object or an object array containing superheroine name,
-// giffy URL, and possibly a giffy ID of some kind
-function displayGiffy(obj) {
-  giffyResults = [];
-
-  // let's retrieve some info from the json object
-  // API info: https://developers.giphy.com/docs/api/schema#gif-object
-  // I figure the small-still image for the "saved" section
-  for (let i = 0; i < obj.data.length; i++) {
-    giffyResults[i] = {id: obj.data[i].id,
-                       name: superheroName,
-                       image_title: obj.data[i].title,
-                       image_orig: obj.data[i].images.original.url,
-                       image_small: obj.data[i].images.fixed_height_small.url};
-  }
-
-  // display the images in the results division, allow user to choose one
-  // will need to set up a listener for the results div
-  for (let i = 0; i < giffyResults.length; i++) {
+// creates images within figure elements, whose visibility is controlled by CSS
+// input argument is the index within the results array to display first
+function displayGiffy(startIndex) {
+  let resultsIndex;  // index into the results array, allowing wrap-around
+  //set the first image to the results index
+  for (let i = 0; i < resultsFiguresEl.length; i++) {
+    // use modulus to wrap around the results array
+    // from https://stackoverflow.com/questions/52883995/how-to-loop-through-wrap-around-an-array-based-on-starting-index
+    resultsIndex = (startIndex + i) % giffyResults.length;
+    // clear any previous results
+    resultsFiguresEl[i].innerHTML = "";
+    // set image and its caption
     let imgEl = document.createElement("img");
-    imgEl.src = giffyResults[i].image_orig;
-    imgEl.alt = giffyResults[i].image_title;
-    imgEl.dataset.index = i;  // for identification if selected
-    resultsDivEl.appendChild(imgEl);
+    let captionEl = document.createElement("figcaption");
+    imgEl.src = giffyResults[resultsIndex].image_orig;
+    imgEl.alt = giffyResults[resultsIndex].image_title;
+    captionEl.textContent = giffyResults[resultsIndex].image_title;
+    imgEl.dataset.index = resultsIndex;  // for identification if selected
+    resultsFiguresEl[i].appendChild(imgEl);
+    resultsFiguresEl[i].appendChild(captionEl);
   }
+}
+
+// function to shuffle array elements
+// taken from SO: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+function shuffle(array) {
+  var currentIndex = array.length;
+  var randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex > 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+  return array;
 }
 
 // function accepts an index (for the results object area)
@@ -105,17 +139,6 @@ function saveGiffy(index) {
   // At some point we may limit the number of saved searches
   savedSearches.push(giffyResults[index]);
   localStorage.setItem("savedSearches", JSON.stringify(savedSearches));
-
-  // now clear the results Div
-  clearResults();
-}
-
-// sometimes we need to clear out previous results
-function clearResults() {
-  let resultsImgEl = document.querySelectorAll("#results img");
-  for (let i = 0; i < resultsImgEl.length; i++) {
-    resultsImgEl[i].remove();
-  }
 }
 
 // adds giffy panel to saved search area
@@ -137,10 +160,31 @@ function addGiffy(giffyObj) {
   captionEl.dataset.name = giffyObj.name;
   figEl.dataset.name = giffyObj.name;
 
-  // create figure and its children image & caption
-  let newFigEl = savedDivEl.appendChild(figEl);
-  newFigEl.appendChild(imgEl);
-  newFigEl.appendChild(captionEl);
+  // create figure children
+  figEl.appendChild(imgEl);
+  figEl.append(captionEl)
+
+  // create a span element for the larger image, it can be hidden/revealed in CSS using :hover
+  let spanEl = document.createElement("span");
+  spanEl.className = "large";
+  let largeFigEl = document.createElement("img");
+  largeFigEl.src = giffyObj.image_orig;
+  largeFigEl.alt = giffyObj.image_title;
+  largeFigEl.className = "large-image";
+  spanEl.appendChild(largeFigEl);
+
+  // line below "turns off" the large image to hide it
+  // Ultimately the line should be discarded and CSS used to hide and then show on :hover
+  largeFigEl.style.display = "none";
+  // another option to hide/show images is with the opacity style attribute (along with position, etc)
+  // largeFigEl.style.opacity = "0.5";
+
+  // now add it to the page
+  figEl.appendChild(spanEl);
+
+  // create figure and its children
+  savedDivEl.appendChild(figEl);
+
 }
 
 // loads data from local storage and sets up the "saved searches" images area
@@ -174,19 +218,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Event listener to select an image to store
+  // Event listener to results area. Respond to clicks on images or arrows.
   resultsDivEl.addEventListener("click", e => {
-    let index = parseInt(e.target.dataset.index);
-    saveGiffy(index);
+    // if there are no results, get out of here
+    if (giffyResults.length===0) {return;}
+
+    if (e.target === resultsLeftArrowEl) {
+      // scroll left
+      currentGiffyResultsIndex--;
+      if (currentGiffyResultsIndex < 0) {
+        // set to the final element (wrap around)
+        currentGiffyResultsIndex = giffyResults.length-1;
+      }
+      displayGiffy(currentGiffyResultsIndex);
+    } else if (e.target === resultsRightArrowEl) {
+      // scroll right
+      currentGiffyResultsIndex++;
+      if (currentGiffyResultsIndex >= giffyResults.length) {
+        // set to the firtst element (wrap around)
+        currentGiffyResultsIndex = 0;
+      }
+      displayGiffy(currentGiffyResultsIndex);
+    } else if (e.target.tagName == "IMG") {
+      let index = parseInt(e.target.dataset.index);
+      saveGiffy(index);
+    }
   });
 
   // Listener for the saved images, clicking will start new search for name
   savedDivEl.addEventListener("click", e => {
+    // need to click on an image
+    if (e.target.tagName != "IMG") {
+      return;
+    }
+    // get the name of the superhero from the data attribute
     let name = e.target.dataset.name;
     if (name !== "") {
       superheroName = name;
       // launch new search
       getGiffy(superheroName);
+    }
+  });
+
+  // Listener for clear-all button, clicking will delete local storage and clear the results area
+  document.querySelector("#clear-all").addEventListener("click", () => {
+    localStorage.removeItem("savedSearches");
+    let savedFiguresEl = document.querySelectorAll("#saved-giffy figure");
+    for (let i = 0; i < savedFiguresEl.length; i++) {
+      savedFiguresEl[i].remove();
     }
   });
 
