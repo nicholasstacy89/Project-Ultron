@@ -6,7 +6,7 @@
 var btn = document.getElementById('search');
 var showContainer = document.getElementById('list-container');
 var listContainer = document.getElementById('name-list');
-var input = document.getElementById('supername');
+var input = document.getElementById('supername');  // text input
 var superCard = document.getElementById('superCard');
 
 const resultsDivEl = document.querySelector("#results");
@@ -15,10 +15,14 @@ const resultsFiguresEl = document.querySelectorAll("#results figure");
 const resultsLeftArrowEl = document.querySelector("#results-left-arrow");
 const resultsRightArrowEl = document.querySelector("#results-right-arrow");
 
-// global for convenience in storing and retrieval
+// global variables for convenience in storing and retrieval
+
+// array of candidate superhero names in autocomplete list
 var superList = [];
 
+// below are for Giphy searches/retrieval
 let superheroName = "";
+let superheroID = "";
 let giffyResults = [];
 let currentGiffyResultsIndex = 0;
 let savedSearches = [];
@@ -27,100 +31,99 @@ let savedSearches = [];
 //                        Functions for Superhero API                        //
 ///////////////////////////////////////////////////////////////////////////////
 
-
-function displayName(name) {
-    input.value = name;
-    removeElements();
-}
-
-removeElements = () => {
-    listContainer.innerHTML = '';
-}
-
-function getID() {
-    var supername = document.getElementById('supername').value;
-    fetch('https://www.superheroapi.com/api.php/10163066703485828/search/'+supername)
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            usesuperID(data);
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-
-}
-
+// Retrieves data from the superhero API and displays it
+// https://www.superheroapi.com for documentation
+// Input is the (numeric) ID of the superhero character
 function getSuperData(superID) {
-    fetch('https://www.superheroapi.com/api.php/10163066703485828/'+superID)
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (data) {
-            createSuper(data);
-            listContainer.style.display = 'none';
-            superList = [];
-            $(input).val('');
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-}
-function usesuperID(data) {
-    var superID = data.results[0].id;
-
-    getSuperData(superID);
-
-}
-function clearSuperCard() {
-    $('#superCard').empty();
+  fetch('https://www.superheroapi.com/api.php/10163066703485828/'+superID)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      // create the superhero card
+      createSuper(data);
+      // cleanup input
+      listContainer.style.display = 'none';
+      superList = [];
+      input.value = '';
+      return data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 }
 
+// Modifies the DOM to display superhero data in the character card div
+// Called by getSuperData()
+// Input is the JSON object returned by the superhero API
 function createSuper(data) {
-    clearSuperCard();
+  // clear the previous card data
+  $('#superCard').empty();
 
-    var superName = data.name;
+  var superName = data.name;
+  var eyes = data.appearance["eye-color"];
+  var height = data.appearance.height[0];
+  var hair = data.appearance["hair-color"];
+  var race = data.appearance.race;
+  var superIntelligence = data.powerstats.intelligence;
+  var superStrength = data.powerstats.strength;
+  var superSpeed = data.powerstats.speed;
+  var groupAffiliation = data.connections["group-affiliation"];
+  var fullName = data.biography["full-name"];
+  var cardName = $('<h1>').html(superName);
+  superCard.style.display = 'block';
 
-    var eyes = data.appearance["eye-color"];
-    var height = data.appearance.height[0];
-    var hair = data.appearance["hair-color"];
-    var race = data.appearance.race;
-    var superIntelligence = data.powerstats.intelligence;
-    var superStrength = data.powerstats.strength;
-    var superSpeed = data.powerstats.speed;
-    var groupAffiliation = data.connections["group-affiliation"];
-    var fullName = data.biography["full-name"];
-    var cardName = $('<h1>').html(superName);
-    superCard.style.display = 'block';
+  var createdSuper = $('<div>').attr('class', 'pop-card');
+  $('#superCard').append(createdSuper);
+  createdSuper.append(cardName);
+  createdSuper.append($('<img>').attr('src', data.image.url));
+  createdSuper.append($('<p>').html('Full Name: '+ fullName));
+  createdSuper.append($('<p>').html('Group Affiliation: '+ groupAffiliation));
+  createdSuper.append($('<p>').text('Height: '+ height));
+  createdSuper.append($('<p>').html('Hair: '+ hair));
+  createdSuper.append($('<p>').html('Eyes: '+ eyes));
+  createdSuper.append($('<p>').html('Race:' + race));
+  createdSuper.append($('<p>').html('Intelligence: '+ superIntelligence));
+  createdSuper.append($('<p>').html('Strength: '+ superStrength));
+  createdSuper.append($('<p>').html('Speed: '+ superSpeed));
 
-    var createdSuper = $('<div>').attr('class', 'pop-card');
-    $('#superCard').append(createdSuper);
-    createdSuper.append(cardName);
-    createdSuper.append($('<img>').attr('src', data.image.url));
-    createdSuper.append($('<p>').html('Full Name: '+ fullName));
-    createdSuper.append($('<p>').html('Group Affiliation: '+ groupAffiliation));
-    createdSuper.append($('<p>').text('Height: '+ height));
-    createdSuper.append($('<p>').html('Hair: '+ hair));
-    createdSuper.append($('<p>').html('Eyes: '+ eyes));
-    createdSuper.append($('<p>').html('Race:' + race));
-    createdSuper.append($('<p>').html('Intelligence: '+ superIntelligence));
-    createdSuper.append($('<p>').html('Strength: '+ superStrength));
-    createdSuper.append($('<p>').html('Speed: '+ superSpeed));
-
-    /*
-     * I THINK this is the point where I can extract the superhero name
-     * for the giphy search. But is there a better option?
-     */
-    superheroName = superName;
-    getGiffy(superheroName);
+  /*
+   * I THINK this is the point where I can extract the superhero name
+   * for the giphy search. But is there a better option?
+   */
+  superheroName = superName;
+  getGiffy(superheroName);
 }
+
+// gets the value from the text input and returns the superhero API ID
+// asynchronous function; called by goBtn() which is triggered by clicking the search button
+function getID() {
+  var supername = document.getElementById('supername').value;
+  fetch('https://www.superheroapi.com/api.php/10163066703485828/search/'+supername)
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (data) {
+      usesuperID(data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
+// extracts the character ID from the JSON response then gets associated data
+// Called by getID(), goBtn(); not used presently I think
+function usesuperID(data) {
+  var superID = data.results[0].id;
+  getSuperData(superID);
+}
+
 
 function goBtn(){
-    getID();
-    usesuperID();
-    getSuperData();
-    createSuper();
+  getID();
+  usesuperID();
+  getSuperData();
+  createSuper();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -293,109 +296,125 @@ function initDisplay() {
 // wait for confirmation that the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
 
-    // watch keyboard entries and create autocomplete list
-    input.addEventListener('keyup', async () => {
-        var url = 'https://www.superheroapi.com/api.php/10163066703485828/search/' +input.value;
-        var response = await fetch(url);
-        var JsonData = await response.json();
-        if (input.value.length <4) {
-            removeElements();
-            return;
-        }
-        JsonData.results.forEach(result => {
-            var checkArray = superList.includes(result.id);
-            if (checkArray === true) {
-                return;
-            }
-            superList.push(result.id);
-            var superID = result.id;
-            var name = result.name;
-            var input = document.getElementById('supername');
-            var list = document.createElement('li');
-            list.style.color = 'black';
-            list.style.cursor = 'pointer';
-            list.style.overflow = 'auto';
-            list.style.textAlign = 'center';
-            list.style.margin = '1px';
-            list.style.padding = '1px';
-            list.style.listStyle = 'none';
-            list.style.fontSize = '10px';
-            list.style.fontFamily = 'monospace';
-            list.style.fontWeight = 'bold';
-            list.style.height = '15px';
-            list.style.width = 'auto';
-            list.style.display = 'block';
-            list.style.backgroundColor = 'white';
-            list.style.borderRadius = '5px';
-            list.id = result.id;
-            listContainer.style.display = 'block';
-            list.innerHTML = name;
-            listContainer.appendChild(list);
-            list.addEventListener('click', () => {
-                // start a new search
-                // first the superhero info
-                getSuperData(superID);
-            });
-        })}); // end input keyup event listerner
+  // watch keyboard entries and generate dynamic autocomplete list of superhero names
+  // the candidate names are pulled from the superhero API dynamically
+  input.addEventListener('keyup', async () => {
+    // URL for searching for superhero IDs
+    var url = 'https://www.superheroapi.com/api.php/10163066703485828/search/' +input.value;
 
-    btn.addEventListener('click', goBtn);
+    // only search if there are 4+ characters
+    if (input.value.length <4) {
+      listContainer.innerHTML = '';
+      return;
+    }
 
-    // Event listener to results area. Respond to clicks on images or arrows.
-    // Clicking arrow scrolls, clicking an image saves that giffy
-    resultsDivEl.addEventListener("click", e => {
-        // if there are no results, get out of here
-        if (giffyResults.length===0) {return;}
+    // get (asynchronous) data from the API
+    var response = await fetch(url);
+    var JsonData = await response.json();
 
-        if (e.target === resultsLeftArrowEl) {
-            // scroll left
-            currentGiffyResultsIndex--;
-            if (currentGiffyResultsIndex < 0) {
-                // set to the final element (wrap around)
-                currentGiffyResultsIndex = giffyResults.length-1;
-            }
-            displayGiffy(currentGiffyResultsIndex);
-        } else if (e.target === resultsRightArrowEl) {
-            // scroll right
-            currentGiffyResultsIndex++;
-            if (currentGiffyResultsIndex >= giffyResults.length) {
-                // set to the firtst element (wrap around)
-                currentGiffyResultsIndex = 0;
-            }
-            displayGiffy(currentGiffyResultsIndex);
-        } else if (e.target.tagName == "IMG") {
-            let index = parseInt(e.target.dataset.index);
-            saveGiffy(index);
-        }
-    });
+    JsonData.results.forEach(result => {
+      // I am not sure why this is here
+      if (superList.includes(result.id) === true) {
+        return;
+      }
+      // add ID to the superList array
+      superList.push(result.id);
+      var superID = result.id;
+      var name = result.name;
 
-    // Listener for the saved images, clicking will start new search for name
-    savedDivEl.addEventListener("click", e => {
-        // need to click on an image
-        if (e.target.tagName != "IMG") {
-            return;
-        }
-        // get the name of the superhero from the data attribute
-        let name = e.target.dataset.name;
-        if (name !== "") {
-            superheroName = name;
-            // launch new search
-            getGiffy(superheroName);
-        }
-    });
+      // not sure why this is here
+      var input = document.getElementById('supername');
 
-    // Listener for clear-all button, clicking will delete local storage and clear the results area
-    document.querySelector("#clear-all").addEventListener("click", () => {
-        localStorage.removeItem("savedSearches");
-        savedSearches = [];
-        let savedFiguresEl = document.querySelectorAll("#saved-giffy figure");
-        for (let i = 0; i < savedFiguresEl.length; i++) {
-            savedFiguresEl[i].remove();
-        }
-    });
+      // elements in the autocomplete list, with styling
+      var list = document.createElement('li');
+      list.style.color = 'black';
+      list.style.cursor = 'pointer';
+      list.style.overflow = 'auto';
+      list.style.textAlign = 'center';
+      list.style.margin = '1px';
+      list.style.padding = '1px';
+      list.style.listStyle = 'none';
+      list.style.fontSize = '10px';
+      list.style.fontFamily = 'monospace';
+      list.style.fontWeight = 'bold';
+      list.style.height = '15px';
+      list.style.width = 'auto';
+      list.style.display = 'block';
+      list.style.backgroundColor = 'white';
+      list.style.borderRadius = '5px';
+      list.id = result.id;
+      listContainer.style.display = 'block';
+      list.innerHTML = name;
+      // add to the DOM to display the list
+      listContainer.appendChild(list);
 
-    // need to initialize the display by loading data from local storage
-    // and setting up the saved images
-    initDisplay();
+      // clicking on an entry in the list will launch a search
+      list.addEventListener('click', () => {
+        // start a new search
+        // first the superhero info
+        getSuperData(superID);
+      });
+    })}); // end input keyup event listerner
+
+  // Search button click
+  btn.addEventListener('click', goBtn);
+
+  // Event listener to results area. Respond to clicks on images or arrows.
+  // Clicking arrow scrolls, clicking an image saves that giffy
+  resultsDivEl.addEventListener("click", e => {
+    // if there are no results, get out of here
+    if (giffyResults.length===0) {return;}
+
+    if (e.target === resultsLeftArrowEl) {
+      // scroll left
+      currentGiffyResultsIndex--;
+      if (currentGiffyResultsIndex < 0) {
+        // set to the final element (wrap around)
+        currentGiffyResultsIndex = giffyResults.length-1;
+      }
+      displayGiffy(currentGiffyResultsIndex);
+    } else if (e.target === resultsRightArrowEl) {
+      // scroll right
+      currentGiffyResultsIndex++;
+      if (currentGiffyResultsIndex >= giffyResults.length) {
+        // set to the firtst element (wrap around)
+        currentGiffyResultsIndex = 0;
+      }
+      displayGiffy(currentGiffyResultsIndex);
+    } else if (e.target.tagName == "IMG") {
+      let index = parseInt(e.target.dataset.index);
+      saveGiffy(index);
+    }
+  });
+
+  // Listener for the saved images, clicking will start new search for name
+  savedDivEl.addEventListener("click", e => {
+    // need to click on an image
+    if (e.target.tagName != "IMG") {
+      return;
+    }
+    // get the name of the superhero from the data attribute
+    let name = e.target.dataset.name;
+    if (name !== "") {
+      superheroName = name;
+      // launch new search
+      getGiffy(superheroName);
+    }
+  });
+
+  // Listener for clear-all button, clicking will delete local storage and clear the results area
+  document.querySelector("#clear-all").addEventListener("click", () => {
+    localStorage.removeItem("savedSearches");
+    savedSearches = [];
+    let savedFiguresEl = document.querySelectorAll("#saved-giffy figure");
+    for (let i = 0; i < savedFiguresEl.length; i++) {
+      savedFiguresEl[i].remove();
+    }
+  });
+
+  // need to initialize the display by loading data from local storage
+  // and setting up the saved images
+  initDisplay();
 
 
   // start with focus on the name field
