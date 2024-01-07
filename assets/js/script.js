@@ -212,8 +212,8 @@ function shuffle(array) {
 
 // function accepts an index (for the results object area)
 // it displays the small version of the image in the "saved" div
-// it also updates local storage with the info and clears the results
-// (should it do the latter?)
+// it also updates local storage with the info
+// calls addGiffy to actually change the DOM
 function saveGiffy(index) {
   // add small image to saved results area
   addGiffy(giffyResults[index]);
@@ -226,7 +226,7 @@ function saveGiffy(index) {
 
 // adds giffy panel to saved search area
 // use figure element with caption set to superhero name
-// will need to change to an inline display
+ // will need to change to an inline display
 // function called by saveGIffy() and initDisplay()
 function addGiffy(giffyObj) {
   let figEl = document.createElement("figure");
@@ -253,7 +253,6 @@ function addGiffy(giffyObj) {
   largeFigEl.src = giffyObj.image_orig;
   largeFigEl.alt = giffyObj.image_title;
   largeFigEl.className = "large-image";
-  spanEl.appendChild(largeFigEl);
 
   // line below "turns off" the large image to hide it
   // Ultimately the line should be discarded and CSS used to hide and then show on :hover
@@ -261,11 +260,22 @@ function addGiffy(giffyObj) {
   // another option to hide/show images is with the opacity style attribute (along with position, etc)
   // largeFigEl.style.opacity = "0.5";
 
-  // now add it to the page
+  // add it to the page
+  spanEl.appendChild(largeFigEl);
   figEl.appendChild(spanEl);
 
   // create figure and its children
   savedDivEl.appendChild(figEl);
+}
+
+// function to clear out all images from the "saved searches" area
+function clearSaved() {
+    localStorage.removeItem("savedSearches");
+    savedSearches = [];
+    let savedFiguresEl = document.querySelectorAll("#saved-giffy figure");
+    for (let i = 0; i < savedFiguresEl.length; i++) {
+      savedFiguresEl[i].remove();
+    }
 }
 
 // loads data from local storage and sets up the "saved searches" images area
@@ -398,15 +408,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Listener for clear-all button, clicking will delete local storage and clear the results area
-  document.querySelector("#clear-all").addEventListener("click", () => {
-    localStorage.removeItem("savedSearches");
-    savedSearches = [];
-    let savedFiguresEl = document.querySelectorAll("#saved-giffy figure");
-    for (let i = 0; i < savedFiguresEl.length; i++) {
-      savedFiguresEl[i].remove();
+  // Listener for the saved images, double-clicking will delete that particular image
+  // from the search area
+  savedDivEl.addEventListener("dblclick", e => {
+    // array of saved (small) images should match savedSearches[] array
+    let resultsImgEl = document.querySelectorAll("#saved-giffy figure > img");
+    let index = 0;
+
+    // need to click on an image
+    if (e.target.tagName != "IMG") {
+      return;
     }
+
+    // if there is just one saved search, clear out the area
+    if (resultsImgEl.length === 1) {
+      clearSaved();
+      return
+    }
+
+    // get the index in the array
+    for (let i = 0; i < resultsImgEl.length; i++) {
+      if (savedSearches[i].image_small === e.target.src) {
+        index = i;
+        break;
+      }
+    }
+
+    // delete entry from savedSearches[] array in memory
+    savedSearches.splice(index, 1);
+
+    // store the updated array in local Storage
+    localStorage.setItem("savedSearches", JSON.stringify(savedSearches));
+
+    // clear the image from the saved images area
+    resultsImgEl[index].parentElement.remove();
   });
+
+
+  // Listener for clear-all button, clicking will delete local storage and clear the results area
+  document.querySelector("#clear-all").addEventListener("click", clearSaved);
 
   // need to initialize the display by loading data from local storage
   // and setting up the saved images
