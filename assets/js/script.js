@@ -33,6 +33,7 @@ let savedSearches = [];
 
 // Retrieves data from the superhero API and displays it
 // https://www.superheroapi.com for documentation
+// Also retrieve gifs from giphy.com and displays a subset
 // Input is the (numeric) ID of the superhero character
 function getSuperData(superID) {
   fetch('https://www.superheroapi.com/api.php/10163066703485828/'+superID)
@@ -49,7 +50,7 @@ function getSuperData(superID) {
     .then(data => {
       // return giphy results
       superheroName = data.name;
-      superheroID = data.ID;
+      superheroID = data.id;
       getGiffy(superheroName);
     })
     .catch( error => console.log(error));
@@ -113,7 +114,8 @@ function usesuperID(data) {
   getSuperData(superID);
 }
 
-
+// callback function for clicking on search button
+// Obsolete at this point I think
 function goBtn(){
   getID();
   usesuperID();
@@ -147,13 +149,13 @@ function getGiffy(name) {
       // let's retrieve some info from the json object
       // API info: https://developers.giphy.com/docs/api/schema#gif-object
       for (let i = 0; i < json.data.length; i++) {
-        giffyResults[i] = {id: json.data[i].id,
+        giffyResults[i] = {giffid: json.data[i].id,
+                           superheroID: superheroID,
                            name: superheroName,
                            image_title: json.data[i].title,
                            image_orig: json.data[i].images.original.url,
                            image_small: json.data[i].images.fixed_height_small.url};
       }
-
 
       // shuffle the order so that doing the same search looks new
       giffyResults = shuffle(giffyResults);
@@ -238,8 +240,7 @@ function addGiffy(giffyObj) {
 
   // same name as data attribute for re-launching searches
   imgEl.dataset.name = giffyObj.name;
-  captionEl.dataset.name = giffyObj.name;
-  figEl.dataset.name = giffyObj.name;
+  imgEl.dataset.id = giffyObj.superheroID;
 
   // create figure children
   figEl.appendChild(imgEl);
@@ -265,7 +266,6 @@ function addGiffy(giffyObj) {
 
   // create figure and its children
   savedDivEl.appendChild(figEl);
-
 }
 
 // loads data from local storage and sets up the "saved searches" images area
@@ -392,8 +392,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let name = e.target.dataset.name;
     if (name !== "") {
       superheroName = name;
+      superheroID = e.target.dataset.id;
       // launch new search
-      getGiffy(superheroName);
+      getSuperData(superheroID);
     }
   });
 
@@ -410,7 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // need to initialize the display by loading data from local storage
   // and setting up the saved images
   initDisplay();
-
 
   // start with focus on the name field
   input.focus();
