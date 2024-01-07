@@ -36,10 +36,8 @@ let savedSearches = [];
 // Input is the (numeric) ID of the superhero character
 function getSuperData(superID) {
   fetch('https://www.superheroapi.com/api.php/10163066703485828/'+superID)
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
+    .then(response => response.json())
+    .then(data => {
       // create the superhero card
       createSuper(data);
       // cleanup input
@@ -48,9 +46,13 @@ function getSuperData(superID) {
       input.value = '';
       return data;
     })
-    .catch(function (error) {
-      console.log(error);
-    });
+    .then(data => {
+      // return giphy results
+      superheroName = data.name;
+      superheroID = data.ID;
+      getGiffy(superheroName);
+    })
+    .catch( error => console.log(error));
 }
 
 // Modifies the DOM to display superhero data in the character card div
@@ -86,13 +88,6 @@ function createSuper(data) {
   createdSuper.append($('<p>').html('Intelligence: '+ superIntelligence));
   createdSuper.append($('<p>').html('Strength: '+ superStrength));
   createdSuper.append($('<p>').html('Speed: '+ superSpeed));
-
-  /*
-   * I THINK this is the point where I can extract the superhero name
-   * for the giphy search. But is there a better option?
-   */
-  superheroName = superName;
-  getGiffy(superheroName);
 }
 
 // gets the value from the text input and returns the superhero API ID
