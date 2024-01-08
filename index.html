@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap" rel="stylesheet">
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,8 +11,9 @@
         <title>Project Ultron</title>
     </head>
     <body>
-        <header>
-            <h1>Project Ultron: Superhero Giffy Selection and Storage</h1>
+        <img src="assets/images/Ultron Logo.png" class="logo"></img>
+        <header class="title">
+            <h1>Superhero GIF Selection and Storage</h1>
         </header>
         <main class="container">
             <p>Ultron wants to assemble information about his superhero foes! He also likes to chuckle at their silly memes.</p>
@@ -22,30 +26,40 @@
                 </div>
             </div>
 
-            <!-- div to contain superher "card" -->
+            <!-- div to contain superhero "card" -->
             <!-- I moved the div below out of the "input" div bc it makes more sense to me
                  but feel free to move it back. It does affect display/styling but not functionality. -->
             <div class="display-container" id="superCard">
+                <h2>Hero/Villian Card</h2>
             </div>
 
             <!-- Div to contain giffy search results -->
             <div id="results">
                 <h2>Giphy Search Results</h2>
                 <p>(Click arrows to scroll, click image to save)</p>
-                <img id="results-left-arrow" src="./assets/images/LeftArrow.png" alt="Left Arrow" height="20px" />
                 <!-- figure below hold results of search (with caption) -->
                 <!-- number of figures being displayed should be det'd by responsive styling -->
-                <figure></figure>
-                <figure></figure>
-                <figure></figure>
-                <img id="results-right-arrow" src="./assets/images/RightArrow.png" alt="Right Arrow" height="20px" />
+                <div class="row">
+                    <div class="column">
+                        <img id="results-left-arrow" src="./assets/images/LeftArrow.png" alt="Left Arrow" height="20px" />
+                    </div>
+                    <div class="column">
+                        <figure></figure>
+                    </div>
+                    <div class="column">
+                        <figure></figure>
+                    </div>
+                    <div class="column">
+                        <img id="results-right-arrow" src="./assets/images/RightArrow.png" alt="Right Arrow" height="20px" />
+                    </div>
+                  </div>
             </div>
 
             <!-- Div to contain saved giffys -->
             <div id="saved-giffy">
                 <h2>Saved Images</h2>
                 <p>(Click to search again, double-click to clear that image)</p>
-                <button id="clear-all" type="button">Clear all</button>
+                <button id="clear-all" type="button">CLEAR ALL</button>
                 <!-- a set of captioned small images inside figure elements, each representing a saved giffy -->
             </div>
 
