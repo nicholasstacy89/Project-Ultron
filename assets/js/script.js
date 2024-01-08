@@ -41,7 +41,7 @@ function getSuperData(superID) {
     .then(data => {
       // create the superhero card
       createSuper(data);
-      // cleanup input
+      // cleanup input field and autocomplete list
       listContainer.style.display = 'none';
       superList = [];
       input.value = '';
@@ -297,7 +297,23 @@ function initDisplay() {
 ///////////////////////////////////////////////////////////////////////////////
 //                     Event Listeners and Code Execution                    //
 ///////////////////////////////////////////////////////////////////////////////
+// clear the superList array if the input field is falls below speficied length
+function clearSuper(event) {
+  if (input.value.length < 5 ) {
+    superList = [];
+  }
+  else {
+    return;
+  }
+}; 
+//call clearSuper() when backspace is pressed
+document.addEventListener('keydown', (event) => {
 
+  if (event.key === 'Backspace') {
+    clearSuper(); 
+   
+  }
+});
 // wait for confirmation that the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -318,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var JsonData = await response.json();
 
     JsonData.results.forEach(result => {
-      // I am not sure why this is here
+      // if the ID is already in the superList array, don't add it again
       if (superList.includes(result.id) === true) {
         return;
       }
@@ -327,8 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
       var superID = result.id;
       var name = result.name;
 
-      // not sure why this is here
-      var input = document.getElementById('supername');
 
       // elements in the autocomplete list, with styling
       var list = document.createElement('li');
