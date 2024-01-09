@@ -71,7 +71,7 @@ button:hover {
     border: ridge black;
 }
 
-#saved-giffy {
+#saved-images {
     text-align: center;
     background-color: crimson;
     color: #fff;
@@ -79,6 +79,15 @@ button:hover {
     padding: 1em;
     margin: 1em;
     border: ridge black;
+}
+
+#saved-giffy {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#saved-giffy figure {
+    padding: 2%;
 }
 
 .list {
@@ -119,9 +128,19 @@ button:hover {
 
 .row {
     display: flex;
+    flex-flow: wrap;
 }
   
 .column {
-    flex: 33.33%;
-    padding: 5px;
+    flex-grow: 1;
+    min-width: 150px;
+}
+
+.column::before {
+    content: "";
+    display: block;
+}
+
+.arrow {
+    display: block;
 }

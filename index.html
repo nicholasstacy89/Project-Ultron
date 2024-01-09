@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap" rel="stylesheet">
@@ -40,7 +41,7 @@
                 <!-- figure below hold results of search (with caption) -->
                 <!-- number of figures being displayed should be det'd by responsive styling -->
                 <div class="row">
-                    <div class="column">
+                    <div class="arrow">
                         <img id="results-left-arrow" src="./assets/images/LeftArrow.png" alt="Left Arrow" height="20px" />
                     </div>
                     <div class="column">
@@ -49,18 +50,19 @@
                     <div class="column">
                         <figure></figure>
                     </div>
-                    <div class="column">
+                    <div class="arrow">
                         <img id="results-right-arrow" src="./assets/images/RightArrow.png" alt="Right Arrow" height="20px" />
                     </div>
                   </div>
             </div>
 
             <!-- Div to contain saved giffys -->
-            <div id="saved-giffy">
+            <div id="saved-images">
                 <h2>Saved Images</h2>
                 <p>(Click to search again, double-click to clear that image)</p>
                 <button id="clear-all" type="button">CLEAR ALL</button>
                 <!-- a set of captioned small images inside figure elements, each representing a saved giffy -->
+                <div id="saved-giffy"></div>
             </div>
 
             <!-- Giphy API asked for acknowledgment -->
