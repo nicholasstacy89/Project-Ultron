@@ -10,7 +10,7 @@ This product is gives superhero stats and pulls gifs to save for later.
 - [License](#license)
 
 ## Installation
-No Installation neccessary just open in the browser to bring back your goofy gifs and super hero stats.
+No Installation necessary just open in the browser to bring back your goofy gifs and super hero stats.
 
 ## Usage
 In the search bar type out your super hero,  after 4 letters have been type it will fetch and populate buttons for each return of those characters.  Clicking on one of the hero buttons will populate a card with that heros name, an image and stats provided by super hero api.  Then it will pull some gifs for that superhero and you can scroll through them and if you find one you like you, just click it once to save that gif!
