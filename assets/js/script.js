@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // DOM elements
-var btn = document.getElementById('search');
+// var btn = document.getElementById('search');
 var showContainer = document.getElementById('list-container');
 var listContainer = document.getElementById('name-list');
 var input = document.getElementById('supername');  // text input
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })}); // end input keyup event listerner
 
   // Search button click
-  btn.addEventListener('click', goBtn);
+  // btn.addEventListener('click', goBtn);
 
   // Event listener to results area. Respond to clicks on images or arrows.
   // Clicking arrow scrolls, clicking an image saves that giffy
