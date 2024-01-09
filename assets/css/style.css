@@ -2,16 +2,24 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Comic Neue', cursive;
 }
-/* Commented out background color temporarily */
-/*
+
 body {
-    background-color: black;
-
-
+    background-image: url("../images/ComicBackground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
 }
- */
+
+.logo {
+    width: 100%;
+    display: flex;
+}
+
+.title h1 {
+text-align: center;
+}
+
 .container {
     width: 90%;
     margin: auto;
@@ -26,7 +34,7 @@ body {
 .input-container {
     display: grid;
     grid-template-columns: 9fr 3fr;
-    gap 1em;
+    gap: 1em;
 }
 input {
     padding: 1em .5em;
@@ -37,23 +45,46 @@ input {
 }
 button {
     padding: 1em .5em;
-    background-color: #2ecc71;
-    border: none;
+    background-color:crimson;
     border-radius: .5em;
     color: white;
     font-weight: bold;
     cursor: pointer;
+    border: none;
 }
 button:hover {
-    background-color: #1a8145;
+    background-color:darkred;
 }
 .display-container {
     padding: 1em;
+    text-align: center;
+    display: flex;
 }
+
+#results {
+    text-align: center;
+    background-color: crimson;
+    color: #fff;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 1em;
+    border: ridge black;
+}
+
+#saved-giffy {
+    text-align: center;
+    background-color: crimson;
+    color: #fff;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 1em;
+    border: ridge black;
+}
+
 .list {
     position: absolute
     width 60%;
-    background-color: lightgray;  
+    background-color: crimson;  
     color: black;
     z-index: 1;
 }
@@ -67,12 +98,13 @@ button:hover {
     cursor: pointer;
 }
 #superCard {
-    background-color: #ffffff;
+    background-color:crimson;
     border-radius: 1em;
     padding: 1em;
     margin: 1em;
     display: grid;
-    color: black; 
+    color: #fff;
+    border: ridge black;
      
 }
 
@@ -83,4 +115,13 @@ button:hover {
     margin: 1em;
     display: grid;
     color: black; 
+}
+
+.row {
+    display: flex;
+}
+  
+.column {
+    flex: 33.33%;
+    padding: 5px;
 }
